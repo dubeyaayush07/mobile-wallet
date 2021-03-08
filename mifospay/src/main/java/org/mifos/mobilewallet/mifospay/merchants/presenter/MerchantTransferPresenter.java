@@ -136,8 +136,7 @@ public class MerchantTransferPresenter implements BaseHomeContract.MerchantTrans
                 @Override
                 public void onComplete() {
                     for (Transaction transaction : transactions) {
-                        if (transaction.getTransferDetail() != null
-                                && transaction.getTransferDetail().getToAccount()
+                        if (transaction.getTransferDetail().getToAccount()
                                 .getAccountNo().equals(
                                         merchantAccountNumber)) {
 

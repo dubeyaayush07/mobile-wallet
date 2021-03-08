@@ -19,26 +19,21 @@ public class Toaster {
     public static final int LONG = Snackbar.LENGTH_LONG;
     public static final int SHORT = Snackbar.LENGTH_SHORT;
 
-    public static void show(View view, String text, int duration, String actionText,
-                                 View.OnClickListener clickListener) {
+    public static void show(View view, String text, int duration) {
         if (view != null) {
             final Snackbar snackbar = Snackbar.make(view, text, duration);
             View sbView = snackbar.getView();
             TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             textView.setTextSize(12);
-            snackbar.setAction(actionText, clickListener);
+            snackbar.setAction(Constants.OK, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    snackbar.dismiss();
+                }
+            });
             snackbar.show();
         }
-    }
-
-    public static void show(View view, String text, int duration) {
-        show(view, text, duration, Constants.OK, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
     }
 
     public static void show(View view, int res, int duration) {

@@ -9,7 +9,6 @@ import org.mifos.mobilewallet.core.data.fineract.entity.accounts.savings.Savings
 import org.mifos.mobilewallet.core.domain.usecase.account.FetchMerchants;
 import org.mifos.mobilewallet.core.domain.usecase.client.FetchClientDetails;
 import org.mifos.mobilewallet.core.utils.Constants;
-import org.mifos.mobilewallet.mifospay.R;
 import org.mifos.mobilewallet.mifospay.base.BaseView;
 import org.mifos.mobilewallet.mifospay.merchants.MerchantsContract;
 
@@ -55,9 +54,7 @@ public class MerchantsPresenter implements MerchantsContract.MerchantsPresenter 
 
                     @Override
                     public void onError(String message) {
-                        mMerchantsView.showErrorStateView(R.drawable.ic_error_state,
-                                R.string.error_oops,
-                                R.string.error_no_merchants_found);
+                        mMerchantsView.fetchMerchantsError();
                     }
                 });
     }
@@ -95,9 +92,7 @@ public class MerchantsPresenter implements MerchantsContract.MerchantsPresenter 
 
             @Override
             public void onFailure(String message) {
-                mMerchantsView.showErrorStateView(R.drawable.ic_error_state,
-                        R.string.error_oops,
-                        R.string.error_no_merchants_found);
+                mMerchantsView.fetchMerchantsError();
             }
         });
 

@@ -11,7 +11,9 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/ll_debit_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,7 +84,9 @@
 
         </LinearLayout>
 
-        <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/ll_otp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -125,7 +129,9 @@
 
         </LinearLayout>
 
-        <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/upi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

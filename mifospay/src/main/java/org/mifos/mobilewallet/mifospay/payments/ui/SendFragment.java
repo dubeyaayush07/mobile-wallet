@@ -34,7 +34,6 @@ import org.mifos.mobilewallet.mifospay.payments.presenter.TransferPresenter;
 import org.mifos.mobilewallet.mifospay.qr.ui.ReadQrActivity;
 import org.mifos.mobilewallet.mifospay.utils.Constants;
 import org.mifos.mobilewallet.mifospay.utils.Toaster;
-import org.mifos.mobilewallet.mifospay.utils.Utils;
 
 import javax.inject.Inject;
 
@@ -113,7 +112,6 @@ public class SendFragment extends BaseFragment implements BaseHomeContract.Trans
         btnScanQr.setVisibility(View.VISIBLE);
         mRlMobile.setVisibility(View.GONE);
         mTilVpa.setVisibility(View.VISIBLE);
-        Utils.hideSoftKeyboard(getActivity());
     }
 
     @OnClick(R.id.btn_mobile)
@@ -127,7 +125,6 @@ public class SendFragment extends BaseFragment implements BaseHomeContract.Trans
         mTilVpa.setVisibility(View.GONE);
         btnScanQr.setVisibility(View.GONE);
         mRlMobile.setVisibility(View.VISIBLE);
-        Utils.hideSoftKeyboard(getActivity());
     }
 
     @OnClick(R.id.btn_submit)
@@ -149,6 +146,7 @@ public class SendFragment extends BaseFragment implements BaseHomeContract.Trans
             if (!mTransferPresenter.checkSelfTransfer(externalId)) {
                 mTransferPresenter.checkBalanceAvailability(externalId, amount);
             } else {
+                showSwipeProgress();
                 showSnackbar(Constants.SELF_ACCOUNT_ERROR);
             }
         }
@@ -215,11 +213,10 @@ public class SendFragment extends BaseFragment implements BaseHomeContract.Trans
                 return;
             }
             double amount = Double.parseDouble(etAmount.getText().toString());
-            if (!mTransferPresenter.checkSelfTransfer(externalId)) {
-                mTransferPresenter.checkBalanceAvailability(externalId, amount);
-            } else {
-                showSnackbar(Constants.SELF_ACCOUNT_ERROR);
-            }
+            MakeTransferFragment fragment = MakeTransferFragment.newInstance(externalId,
+                    amount);
+            fragment.show(getChildFragmentManager(),
+                    Constants.MAKE_TRANSFER_FRAGMENT);
 
         } else if (requestCode == PICK_CONTACT && resultCode == Activity.RESULT_OK) {
             Cursor cursor = null;
@@ -246,11 +243,7 @@ public class SendFragment extends BaseFragment implements BaseHomeContract.Trans
                 showToast(Constants.ERROR_CHOOSING_CONTACT);
             }
         } else if (requestCode == REQUEST_SHOW_DETAILS && resultCode == Activity.RESULT_CANCELED) {
-            if (mBtnMobile.isSelected()) {
-                showSnackbar(Constants.ERROR_FINDING_MOBILE_NUMBER);
-            } else {
-                showSnackbar(Constants.ERROR_FINDING_VPA);
-            }
+            showSnackbar(Constants.ERROR_FINDING_VPA);
         }
     }
 

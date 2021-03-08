@@ -60,10 +60,10 @@ public class MobileVerificationActivity extends BaseActivity implements
         mPresenter.attachView(this);
 
         setToolbarTitle("");
-        showColoredBackButton(Constants.WHITE_BACK_BUTTON);
+        showBackButton();
 
         mCcpCode.registerCarrierNumberEditText(mEtMobileNumber);
-        mCcpCountry.setCustomMasterCountries(null);
+        mCcpCountry.setCustomMasterCountries("IN,US");
     }
 
     @Override
@@ -87,7 +87,7 @@ public class MobileVerificationActivity extends BaseActivity implements
             }, 1500);
 
         } else {
-            showToast(getString(R.string.enter_valid_mob_num));
+            showToast("Enter a valid mobile number");
         }
     }
 

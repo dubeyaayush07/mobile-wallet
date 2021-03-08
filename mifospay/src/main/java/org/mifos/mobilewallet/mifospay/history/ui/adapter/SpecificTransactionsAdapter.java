@@ -14,7 +14,6 @@ import android.widget.TextView;
 import org.mifos.mobilewallet.core.domain.model.Transaction;
 import org.mifos.mobilewallet.mifospay.R;
 import org.mifos.mobilewallet.mifospay.utils.Constants;
-import org.mifos.mobilewallet.mifospay.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +51,8 @@ public class SpecificTransactionsAdapter
         holder.mTvTransactionId.setText(
                 Constants.TRANSACTION_ID + ": " + transaction.getTransactionId());
         holder.mTvTransactionDate.setText(Constants.DATE + ": " + transaction.getDate());
-        holder.mTvTransactionAmount.setText(Utils.getFormattedAccountBalance(
-                transaction.getAmount(), transaction.getCurrency().getCode()));
+        holder.mTvTransactionAmount.setText(
+                transaction.getCurrency().getCode() + " " + transaction.getAmount());
 
         holder.mTvFromClientName.setText(
                 transaction.getTransferDetail().getFromClient().getDisplayName());
