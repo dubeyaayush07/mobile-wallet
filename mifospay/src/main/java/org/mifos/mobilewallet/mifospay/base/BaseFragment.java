@@ -26,9 +26,9 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    protected void showBackButton(int drawable) {
+    protected void showBackButton() {
         if (callback != null) {
-            callback.showColoredBackButton(drawable);
+            callback.showBackButton();
         }
     }
 

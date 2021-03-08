@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -12,27 +11,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.TextView;
 
-
-import com.mifos.mobile.passcode.utils.PassCodeConstants;
 
 import org.mifos.mobilewallet.core.data.fineract.entity.accounts.savings.TransferDetail;
 import org.mifos.mobilewallet.core.domain.model.Transaction;
 import org.mifos.mobilewallet.mifospay.R;
 import org.mifos.mobilewallet.mifospay.base.BaseActivity;
-import org.mifos.mobilewallet.mifospay.passcode.ui.PassCodeActivity;
 import org.mifos.mobilewallet.mifospay.receipt.ReceiptContract;
 import org.mifos.mobilewallet.mifospay.receipt.presenter.ReceiptPresenter;
 import org.mifos.mobilewallet.mifospay.utils.Constants;
 import org.mifos.mobilewallet.mifospay.utils.FileUtils;
 import org.mifos.mobilewallet.mifospay.utils.Toaster;
-import org.mifos.mobilewallet.mifospay.utils.Utils;
 
 import java.io.File;
 import java.util.List;
@@ -77,8 +70,6 @@ public class ReceiptActivity extends BaseActivity implements ReceiptContract.Rec
 
     private String transactionId;
     private boolean isDebit;
-    private Uri deepLinkURI;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,11 +80,10 @@ public class ReceiptActivity extends BaseActivity implements ReceiptContract.Rec
 
         ButterKnife.bind(this);
         setToolbarTitle(Constants.RECEIPT);
-        showColoredBackButton(Constants.BLACK_BACK_BUTTON);
+        showBackButton();
         mPresenter.attachView(this);
 
         Uri data = getIntent().getData();
-        deepLinkURI = data;
         if (data != null) {
             String scheme = data.getScheme(); // "https"
             String host = data.getHost(); // "receipt.mifospay.com"
@@ -102,8 +92,20 @@ public class ReceiptActivity extends BaseActivity implements ReceiptContract.Rec
                 params = data.getPathSegments();
                 transactionId = params.get(0); // "transactionId"
                 tvReceiptLink.setText(data.toString());
+                tvReceiptLink.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        ClipboardManager cm = (ClipboardManager) getSystemService(
+                                Context.CLIPBOARD_SERVICE);
+                        ClipData clipData = ClipData.newPlainText(Constants.UNIQUE_RECEIPT_LINK,
+                                tvReceiptLink.getText().toString());
+                        cm.setPrimaryClip(clipData);
+                        showSnackbar(Constants.UNIQUE_RECEIPT_LINK_COPIED_TO_CLIPBOARD);
+                        return true;
+                    }
+                });
             } catch (IndexOutOfBoundsException e) {
-                showToast(getString(R.string.invalid_link));
+                showToast("Invalid link used to open the App.");
             }
             showProgressDialog(Constants.PLEASE_WAIT);
             mPresenter.fetchTransaction(Long.parseLong(transactionId));
@@ -111,24 +113,8 @@ public class ReceiptActivity extends BaseActivity implements ReceiptContract.Rec
     }
 
     @Override
-    public void openPassCodeActivity() {
-        Intent i = new Intent(this, PassCodeActivity.class);
-        i.putExtra("uri", deepLinkURI.toString());
-
-        /**
-         * this is actually not true but has to be set true so as to make the passcode
-         * open a new receipt activity
-         */
-        i.putExtra(PassCodeConstants.PASSCODE_INITIAL_LOGIN, true);
-        startActivity(i);
-        finish();
-    }
-
-
-    @Override
     public void showTransactionDetail(Transaction transaction) {
-        tvAmount.setText(Utils.getFormattedAccountBalance(
-                transaction.getAmount(), transaction.getCurrency().getCode()));
+        tvAmount.setText(transaction.getCurrency().getCode() + " " + transaction.getAmount());
         tvDate.setText(transaction.getDate());
         tvReceiptLink.setText(Constants.RECEIPT_DOMAIN + transaction.getTransactionId());
         tvTransactionID.setText(String.valueOf(transaction.getTransactionId()));
@@ -137,13 +123,13 @@ public class ReceiptActivity extends BaseActivity implements ReceiptContract.Rec
         switch (transaction.getTransactionType()) {
             case DEBIT:
                 isDebit = true;
-                tvOperation.setText(R.string.paid_to);
-                tvOperation.setTextColor(getResources().getColor(R.color.colorDebit));
+                tvOperation.setText("Paid to");
+                tvOperation.setTextColor(Color.RED);
                 break;
             case CREDIT:
                 isDebit = false;
-                tvOperation.setText(R.string.credited_by);
-                tvOperation.setTextColor(getResources().getColor(R.color.colorCredit));
+                tvOperation.setText("Credited By");
+                tvOperation.setTextColor(Color.parseColor("#009688"));
                 break;
             case OTHER:
                 isDebit = false;
@@ -167,7 +153,7 @@ public class ReceiptActivity extends BaseActivity implements ReceiptContract.Rec
         tvTransFromName.setText(Constants.NAME + transferDetail.getFromClient().getDisplayName());
         tvTransFromNumber.setText(Constants.ACCOUNT_NUMBER + transferDetail
                 .getFromAccount().getAccountNo());
-        dismissProgressDialog();
+        hideProgressDialog();
     }
 
     @OnClick(R.id.fab_download)
@@ -182,30 +168,9 @@ public class ReceiptActivity extends BaseActivity implements ReceiptContract.Rec
                     REQUEST_WRITE_EXTERNAL_STORAGE);
         } else {
             // Permission already granted
-            showSnackbar(getString(R.string.downloading_receipt));
+            showSnackbar("Downloading Receipt");
             mPresenter.downloadReceipt(transactionId);
         }
-    }
-
-    @OnClick(R.id.transaction_reciept_copy)
-    void copyReceiptLink() {
-        ClipboardManager cm = (ClipboardManager) getSystemService(
-                Context.CLIPBOARD_SERVICE);
-        ClipData clipData = ClipData.newPlainText(Constants.UNIQUE_RECEIPT_LINK,
-                tvReceiptLink.getText().toString());
-        cm.setPrimaryClip(clipData);
-        showSnackbar(Constants.UNIQUE_RECEIPT_LINK_COPIED_TO_CLIPBOARD);
-    }
-
-    @OnClick(R.id.transaction_reciept_share)
-    void shareReceiptLink() {
-        Intent intent = new Intent(Intent.ACTION_SEND)
-                .setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, tvReceiptLink.getText().toString())
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        intent = Intent.createChooser(intent, getString(R.string.share_receipt));
-        startActivity(intent);
     }
 
     @Override
@@ -230,32 +195,12 @@ public class ReceiptActivity extends BaseActivity implements ReceiptContract.Rec
         if (!mifosDirectory.exists()) {
             mifosDirectory.mkdirs();
         }
-        final File documentFile = new File(mifosDirectory.getPath(), filename);
+        File documentFile = new File(mifosDirectory.getPath(), filename);
         if (!FileUtils.writeInputStreamDataToFile(responseBody.byteStream(), documentFile)) {
             showToast(Constants.ERROR_DOWNLOADING_RECEIPT);
         } else {
-            Toaster.show(findViewById(android.R.id.content),
-                    Constants.RECEIPT_DOWNLOADED_SUCCESSFULLY, Snackbar.LENGTH_LONG, Constants.VIEW,
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            openFile(ReceiptActivity.this, documentFile);
-                        }
-                    });
+            showSnackbar(Constants.RECEIPT_DOWNLOADED_SUCCESSFULLY);
         }
-    }
-
-    private void openFile(Context context, File file) {
-        final Uri data = FileProvider.getUriForFile(context,
-                "org.mifos.mobilewallet.mifospay.provider", file);
-        context.grantUriPermission(context.getPackageName(),
-                data, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        Intent intent = new Intent(Intent.ACTION_VIEW)
-                .setDataAndType(data, "application/pdf")
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        intent = Intent.createChooser(intent, getString(R.string.view_receipt));
-        context.startActivity(intent);
     }
 
     @Override
@@ -267,7 +212,7 @@ public class ReceiptActivity extends BaseActivity implements ReceiptContract.Rec
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    showSnackbar(getString(R.string.downloading_receipt));
+                    showSnackbar("Downloading Receipt");
                     mReceiptPresenter.downloadReceipt(transactionId);
 
                 } else {

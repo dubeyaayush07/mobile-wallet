@@ -76,7 +76,6 @@ public class HomePresenter implements BaseHomeContract.HomePresenter,
                         mHomeView.showTransactionsError();
                         mHomeView.showToast(message);
                         mHomeView.hideSwipeProgress();
-                        mHomeView.hideTransactionLoading();
                     }
                 });
     }

@@ -113,13 +113,6 @@ public class LoginActivity extends BaseActivity implements AuthContract.LoginVie
         signupMethod.show(getSupportFragmentManager(), Constants.CHOOSE_SIGNUP_METHOD);
     }
 
-    @OnClick(R.id.bg_screen)
-    public void backgroundScreenClicked() {
-        if (this.getCurrentFocus() != null) {
-            Utils.hideSoftKeyboard(this);
-        }
-    }
-
     @Override
     public void disableLoginButton() {
         btnLogin.setEnabled(false);
@@ -151,6 +144,7 @@ public class LoginActivity extends BaseActivity implements AuthContract.LoginVie
         Intent intent = new Intent(LoginActivity.this, PassCodeActivity.class);
         intent.putExtra(PassCodeConstants.PASSCODE_INITIAL_LOGIN, true);
         startActivity(intent);
+        finish();
     }
 
     public void signupUsingGoogleAccount(int mifosSavingsProductId) {
@@ -190,6 +184,7 @@ public class LoginActivity extends BaseActivity implements AuthContract.LoginVie
                 DebugUtil.log(Constants.GOOGLE_SIGN_IN_FAILED, e.getMessage());
                 Toaster.showToast(this, Constants.GOOGLE_SIGN_IN_FAILED);
                 hideProgressDialog();
+                startActivity(new Intent(LoginActivity.this, LoginActivity.class));
             }
         }
     }
@@ -197,7 +192,6 @@ public class LoginActivity extends BaseActivity implements AuthContract.LoginVie
     public void signup(int mifosSavingsProductId) {
         showProgressDialog(Constants.PLEASE_WAIT);
         Intent intent = new Intent(LoginActivity.this, MobileVerificationActivity.class);
-        mMifosSavingProductId = mifosSavingsProductId;
         intent.putExtra(Constants.MIFOS_SAVINGS_PRODUCT_ID, mMifosSavingProductId);
         if (account != null) {
             intent.putExtra(Constants.GOOGLE_PHOTO_URI, account.getPhotoUrl());

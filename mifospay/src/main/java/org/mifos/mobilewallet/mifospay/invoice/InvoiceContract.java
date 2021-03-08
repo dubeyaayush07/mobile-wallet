@@ -33,11 +33,11 @@ public interface InvoiceContract {
 
         void showSnackbar(String message);
 
+        void showToast(String message);
+
         void showInvoices(List<Invoice> invoiceList);
 
-        void showErrorStateView(int drawable, int title, int subtitle);
-
-        void showFetchingProcess();
+        void hideProgress();
     }
 
     interface InvoicesPresenter extends BasePresenter {

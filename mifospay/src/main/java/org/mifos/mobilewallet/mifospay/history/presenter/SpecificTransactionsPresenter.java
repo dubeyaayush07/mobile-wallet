@@ -6,7 +6,6 @@ import org.mifos.mobilewallet.core.base.UseCaseFactory;
 import org.mifos.mobilewallet.core.base.UseCaseHandler;
 import org.mifos.mobilewallet.core.domain.model.Transaction;
 import org.mifos.mobilewallet.core.domain.usecase.account.FetchAccountTransfer;
-import org.mifos.mobilewallet.mifospay.R;
 import org.mifos.mobilewallet.mifospay.base.BaseView;
 import org.mifos.mobilewallet.mifospay.history.HistoryContract;
 import org.mifos.mobilewallet.mifospay.utils.Constants;
@@ -48,7 +47,7 @@ public class SpecificTransactionsPresenter implements
     public ArrayList<Transaction> getSpecificTransactions(final ArrayList<Transaction> transactions,
                                                           final String secondAccountNumber) {
         final ArrayList<Transaction> specificTransactions = new ArrayList<>();
-        mSpecificTransactionsView.showProgress();
+
         if (transactions != null && transactions.size() > 0) {
 
             for (int i = 0; i < transactions.size(); i++) {
@@ -103,10 +102,7 @@ public class SpecificTransactionsPresenter implements
 
                 @Override
                 public void onFailure(String message) {
-                    mSpecificTransactionsView.showStateView(
-                            R.drawable.ic_error_state,
-                            R.string.error_oops,
-                            R.string.error_specific_transactions);
+
                 }
             });
         }

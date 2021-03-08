@@ -11,6 +11,7 @@ import android.widget.TextView;
 import org.mifos.mobilewallet.core.domain.model.Transaction;
 import org.mifos.mobilewallet.mifospay.R;
 import org.mifos.mobilewallet.mifospay.utils.Constants;
+import org.mifos.mobilewallet.mifospay.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static org.mifos.mobilewallet.mifospay.utils.Utils.getFormattedAccountBalance;
 
 /**
  * Created by naman on 17/8/17.
@@ -47,13 +46,12 @@ public class HistoryAdapter
     public void onBindViewHolder(ViewHolder holder, int position) {
         Transaction transaction = transactions.get(position);
 
-        Double balance = transaction.getAmount();
-        String currencyCode = transaction.getCurrency().getCode();
-        holder.tvTransactionAmount
-                .setText(getFormattedAccountBalance(balance, currencyCode));
+        String balance = Utils.getFormattedAccountBalance(transaction.getAmount());
+        String currency = transaction.getCurrency().getCode();
+        holder.tvTransactionAmount.setText(String.format("%s %s", currency, balance));
         holder.tvTransactionDate.setText(transaction.getDate());
 
-        if (balance > 0 && context != null) {
+        if (isBalancePositive(balance) && context != null) {
             int color = ContextCompat.getColor(context, R.color.colorAccentBlue);
             holder.tvTransactionAmount.setTextColor(color);
         }
@@ -61,18 +59,19 @@ public class HistoryAdapter
         switch (transaction.getTransactionType()) {
             case DEBIT:
                 holder.tvTransactionStatus.setText(Constants.DEBIT);
-                holder.tvTransactionStatus.setTextColor(ContextCompat.getColor(
-                        context, R.color.colorDebit));
                 break;
             case CREDIT:
                 holder.tvTransactionStatus.setText(Constants.CREDIT);
-                holder.tvTransactionStatus.setTextColor(ContextCompat.getColor(
-                        context, R.color.colorCredit));
                 break;
             case OTHER:
                 holder.tvTransactionStatus.setText(Constants.OTHER);
                 break;
         }
+    }
+
+    private boolean isBalancePositive(String balance) {
+        balance = balance.replaceAll("[,.]", "");
+        return Double.parseDouble(balance) > 0;
     }
 
     @Override
@@ -104,10 +103,10 @@ public class HistoryAdapter
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_item_casual_list_title)
-        TextView tvTransactionAmount;
+        TextView tvTransactionStatus;
 
         @BindView(R.id.tv_item_casual_list_optional_caption)
-        TextView tvTransactionStatus;
+        TextView tvTransactionAmount;
 
         @BindView(R.id.tv_item_casual_list_subtitle)
         TextView tvTransactionDate;

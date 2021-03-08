@@ -18,7 +18,7 @@ public interface BaseActivityCallback {
 
     void setSwipeRefreshEnabled(boolean enabled);
 
-    void showColoredBackButton(int drawable);
+    void showBackButton();
 
     void showCloseButton();
 

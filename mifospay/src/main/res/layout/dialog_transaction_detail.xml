@@ -9,19 +9,12 @@
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ProgressBar
-            android:id="@+id/pb_transaction_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            style="?android:attr/progressBarStyleHorizontal" />
+        android:orientation="vertical"
+        android:padding="@dimen/value_10dp">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:padding="@dimen/value_10dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -84,7 +77,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_margin="@dimen/value_10dp"
+            android:layout_marginTop="@dimen/value_10dp"
             android:background="#44000000"/>
 
         <RelativeLayout
@@ -174,7 +167,7 @@
             android:id="@+id/v_rule2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_margin="@dimen/value_10dp"
+            android:layout_marginTop="@dimen/value_10dp"
             android:background="#44000000"
             android:visibility="gone"/>
 
@@ -183,7 +176,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/value_10dp"
             android:layout_marginTop="@dimen/value_10dp"
             android:foregroundGravity="center"
             android:gravity="center"
@@ -192,5 +184,12 @@
             android:textStyle="bold"/>
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
 </FrameLayout>

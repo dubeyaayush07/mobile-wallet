@@ -18,8 +18,6 @@ public interface TransferContract {
         void transferFailure();
 
         void showVpaNotFoundSnackbar();
-
-        void enableDragging(boolean enable);
     }
 
     interface TransferPresenter extends BasePresenter {

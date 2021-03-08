@@ -24,6 +24,4 @@ public class ApiEndPoints {
     public static final String TWOFACTOR = "twofactor";
     public static final String RUN_REPORT = "runreports";
     public static final String USER = "users";
-    public static final String STANDING_INSTRUCTION = "standinginstructions";
-
 }

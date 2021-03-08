@@ -83,7 +83,7 @@ public class MerchantTransferActivity extends BaseActivity implements
         setContentView(R.layout.activity_merchant_transaction);
         ButterKnife.bind(this);
         setToolbarTitle("Merchant Transaction");
-        showColoredBackButton(Constants.BLACK_BACK_BUTTON);
+        showBackButton();
         setupUI();
         mPresenter.attachView(this);
         mPresenter.fetchMerchantTransfers(merchantAccountNumber);
@@ -137,25 +137,14 @@ public class MerchantTransferActivity extends BaseActivity implements
     @OnClick(R.id.btn_submit)
     public void makeTransaction() {
         String externalId = tvMerchantVPA.getText().toString().trim();
-        String amount = etAmount.getText().toString().trim();
+        String eamount = etAmount.getText().toString().trim();
 
-        if (amount.isEmpty()) {
-            showToast(Constants.PLEASE_ENTER_ALL_THE_FIELDS);
-            return;
-        } else if (Double.parseDouble(amount) <= 0) {
+        double amount = Double.parseDouble(eamount);
+        if (amount <= 0) {
             showToast(Constants.PLEASE_ENTER_VALID_AMOUNT);
             return;
         }
-        mTransferPresenter.checkBalanceAvailability(externalId, Double.parseDouble(amount));
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED) {
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            return;
-        }
-        super.onBackPressed();
+        mTransferPresenter.checkBalanceAvailability(externalId, amount);
     }
 
     @Override

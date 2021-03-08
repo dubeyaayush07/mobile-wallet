@@ -73,7 +73,7 @@ public class LinkBankAccountActivity extends BaseActivity implements
         getActivityComponent().inject(this);
         ButterKnife.bind(this);
         setToolbarTitle("Link Bank Account");
-        showColoredBackButton(Constants.BLACK_BACK_BUTTON);
+        showBackButton();
         mPresenter.attachView(this);
 
         showProgressDialog(Constants.PLEASE_WAIT);
@@ -221,14 +221,5 @@ public class LinkBankAccountActivity extends BaseActivity implements
             }
         }, 1500);
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mEtSearchBank.getText().length() != 0) {
-            mEtSearchBank.getText().clear();
-        } else {
-            super.onBackPressed();
-        }
     }
 }

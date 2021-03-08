@@ -15,7 +15,6 @@ import org.mifos.mobilewallet.mifospay.base.BaseActivity;
 import org.mifos.mobilewallet.mifospay.common.SearchContract;
 import org.mifos.mobilewallet.mifospay.common.presenter.SearchPresenter;
 import org.mifos.mobilewallet.mifospay.common.ui.adapter.SearchAdapter;
-import org.mifos.mobilewallet.mifospay.utils.Constants;
 import org.mifos.mobilewallet.mifospay.utils.Toaster;
 
 import java.util.List;
@@ -55,7 +54,7 @@ public class SearchActivity extends BaseActivity implements SearchContract.Searc
         ButterKnife.bind(this);
 
         setToolbarTitle("");
-        showColoredBackButton(Constants.BLACK_BACK_BUTTON);
+        showBackButton();
 
         mPresenter.attachView(this);
 

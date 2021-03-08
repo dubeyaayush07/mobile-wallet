@@ -13,7 +13,6 @@ import org.mifos.mobilewallet.mifospay.R;
 import org.mifos.mobilewallet.mifospay.base.BaseActivity;
 import org.mifos.mobilewallet.mifospay.notification.NotificationContract;
 import org.mifos.mobilewallet.mifospay.notification.presenter.NotificationPresenter;
-import org.mifos.mobilewallet.mifospay.utils.Constants;
 import org.mifos.mobilewallet.mifospay.utils.DebugUtil;
 import org.mifos.mobilewallet.mifospay.utils.Toaster;
 
@@ -51,7 +50,7 @@ public class NotificationActivity extends BaseActivity implements
         setContentView(R.layout.activity_notification);
         ButterKnife.bind(this);
         setToolbarTitle("Notifications");
-        showColoredBackButton(Constants.BLACK_BACK_BUTTON);
+        showBackButton();
         getActivityComponent().inject(this);
 
         setupRecyclerView();
